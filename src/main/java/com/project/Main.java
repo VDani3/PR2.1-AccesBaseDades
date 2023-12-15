@@ -39,7 +39,7 @@ public class Main {
 
             // Mostrar tots els personatges
             if (opt.equals("1")) {
-                System.out.println(sqlManager.getTables(conn));
+                System.out.print(sqlManager.getTables(conn));
                 opt2 = sc.nextLine();
 
                 try{
@@ -58,7 +58,7 @@ public class Main {
                     sc.nextLine();
                     limpiarConsola();
                     
-                } catch (Exception e) {}
+                } catch (Exception e) {e.printStackTrace();sc.nextLine();}
 
             // Mostrar personatges per faccio
             } else if (opt.equals("3")) {

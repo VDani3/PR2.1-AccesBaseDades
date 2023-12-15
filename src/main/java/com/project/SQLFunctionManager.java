@@ -29,9 +29,9 @@ public class SQLFunctionManager {
                 + " FOREIGN KEY (idFaccio) REFERENCES Faccio(id));");
 
         // Afegir elements a una taula
-        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Cavallers','The Knights are one of the four playable factions in For Honor. It is their belief that many, if not all of the ancient ruins were constructed by their ancestors. The Knights had been scattered for centuries but have begun to reunite under a single banner, that of the Iron Legion. There are those still, however, who choose to gather their own ''Legion'', and their alliance with the Iron Legion is shaky at best.  ');");
-        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Vikings', 'The Vikings are the undisputed power of the rivers and seas. In their pursuit to gain the approval of their gods in Valhalla, the Vikings live for battle and glory as they seek out riches and new land, destroying everything in their path to gain it.');");
-        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Samurais', 'After having been driven from their ancestral homes and rebuilding their forces, though strong and mighty, the Samurai still find themselves vastly outnumbered by their new neighbors. Because of this, they know that only through greater cunning, skill and loyalty to each other will their people have a chance to thrive. They may very well be the last of their kind.');");
+        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Cavallers','The Knights had been scattered for centuries but have begun to reunite under a single banner, that of the Iron Legion.');");
+        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Vikings', 'The Vikings are the undisputed power of the rivers and seas.');");
+        UtilsSQLite.queryUpdate(conn, "INSERT INTO Faccio (nom, resum) VALUES ('Samurais', 'After having been driven from their ancestral homes and rebuilding their forces, though strong and mighty, the Samurai still find themselves vastly outnumbered by their new neighbors.');");
 
 
         //Agafem els id de les taules
@@ -40,16 +40,16 @@ public class SQLFunctionManager {
         int idSamurais = getFaccioId(conn, "Samurais");
 
         //Cavallers
-        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Warden\", 120, 130, %s)", idCavallers));
+        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Warden\", 120, 135, %s)", idCavallers));
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Warmonger\", 130, 130, %s)", idCavallers));
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Peacekeeper\", 120, 120, %s)", idCavallers));
         //Vikings
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Valkyrie\", 120, 120, %s)", idVikings));
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Berserker\", 130, 140, %s)", idVikings));
-        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Jormungandr\", 130, 140, %s)", idVikings));
+        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Jormungandr\", 135, 140, %s)", idVikings));
         //Samurais
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Shinobi\", 120, 135, %s)", idSamurais));
-        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Aramusha\", 120, 120, %s)", idSamurais));
+        UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Aramusha\", 125, 120, %s)", idSamurais));
         UtilsSQLite.queryUpdate(conn, String.format("INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Kyoshin\", 120, 120, %s)", idSamurais));
 
         // Desconnectar
@@ -89,20 +89,21 @@ public class SQLFunctionManager {
 
     public String getFaccioCharacters(Connection conn, int id) {
         String res = "\nPersonatges de la Faccio " + id + ":\n";
-        res += "\n--------------------------------\n";
-        res += String.format(" %-10s% -10s% -10s\n", "Nom", "Atac", "Defensa");
-        res += "--------------------------------\n";
+        res += "\n----------------------------------------\n";
+        res += String.format(" %-13s  %-13s  %-13s\n", "Nom", "Atac", "Defensa");
+        res += "----------------------------------------\n";
     
         try {
             ResultSet rs = UtilsSQLite.querySelect(conn, "SELECT * FROM Personatge WHERE idFaccio = " + id + ";");
             while (rs.next()) {
-                res += String.format(" %-10s% -10.2f% -10.2f\n", rs.getString("nom"), rs.getDouble("atac"), rs.getDouble("defensa"));
+                res += String.format(" %-13s  %-13.2f  %-13.2f\n", rs.getString("nom"), rs.getDouble("atac"), rs.getDouble("defensa"));
             }
-            res += "--------------------------------";
+            res += "----------------------------------------";
         } catch (Exception e) {}
     
         return res;
     }
+    
     
 
     public  String getTables(Connection conn) {
@@ -116,50 +117,56 @@ public class SQLFunctionManager {
         return res;
     }
 
-    public  String getTable(Connection conn, int id) {
+    public String getTable(Connection conn, int id) {
         String res = "\n";
         String table = "";
-
+    
         try {
             if (id == 2) {
                 table = "Personatge";
-                res += "Taula "+table+":\n";
-                res += "----------------------------------\n";
-                res += "Nom     Atac   Defensa   idFraccio\n";
-                res += "----------------------------------\n";
+                res += "Taula " + table + ":\n";
+                res += "-----------------------------------------------------------------\n";
+                res += String.format("%-14s  %-14s  %-14s  %-14s\n", "Nom", "Atac", "Defensa", "idFraccio");
+                res += "-----------------------------------------------------------------\n";
             } else if (id == 1) {
                 table = "Faccio";
-                res += "Taula "+table+":\n";
-                res += "----------------------------\n";
-                res += "Nom      Resum\n";
-                res += "----------------------------\n";
+                res += "Taula " + table + ":\n";
+                res += "-----------------------------------------------------------------\n";
+                res += String.format("%-14s  %-14s\n", "Nom", "Resum");
+                res += "-----------------------------------------------------------------\n";
             } else {
                 return "No n'hi han taula amb aquest id";
             }
-            ResultSet rs = UtilsSQLite.querySelect(conn,String.format("Select * From %s", table));
+            ResultSet rs = UtilsSQLite.querySelect(conn, String.format("Select * From %s", table));
             while (rs.next()) {
                 if (id == 2) {
-                    res += String.format("%s  %s  %s  %s\n", rs.getString("nom"), rs.getInt("atac"), rs.getInt("defensa"), rs.getInt("idFaccio"));
+                    res += String.format("%-14s  %-14d  %-14d  %-14d\n", rs.getString("nom"), rs.getInt("atac"), rs.getInt("defensa"), rs.getInt("idFaccio"));
                 } else if (id == 1) {
-                    res += String.format("%s  %s\n", rs.getString("nom"), rs.getString("resum"));
+                    res += String.format("%-14s  %-30s\n", rs.getString("nom"), rs.getString("resum"));
                 }
             }
-            res += "----------------------------\n";
-
-            
-        } catch (Exception e) {}
+            res += "-----------------------------------------------------------------\n";
+    
+        } catch (Exception e) {
+        }
         return res;
     }
+    
+    
 
     public  String getBestCharacter(Connection conn, int id, String stat) {
         String res = "";
+        res += "\n----------------------------------------\n";
+        res += String.format(" %-13s  %-13s  %-13s\n", "Nom", "Atac", "Defensa");
+        res += "----------------------------------------\n";
     
         try {
             ResultSet rs = UtilsSQLite.querySelect(conn,
                     String.format("SELECT * FROM Personatge WHERE idFaccio = %s ORDER BY %s DESC LIMIT 1;", id, stat));
     
             if (rs.next()) {
-                res += String.format("\n  %s  %s  %s", rs.getString("nom"), rs.getInt("atac"), rs.getInt("defensa"));
+                res += String.format(" %-13s  %-13s  %-13s\n", rs.getString("nom"), rs.getInt("atac"), rs.getInt("defensa"));
+                res += "----------------------------------------\n";
             } else {
                 res += "No s'ha trobat info";
             }
